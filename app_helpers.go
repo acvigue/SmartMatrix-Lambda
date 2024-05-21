@@ -44,7 +44,8 @@ type AppletSource struct {
 }
 
 func GetManifestForApp(appID string) (*AppletManifest, error) {
-	path := `./TidbytCommunity/apps/` + appID + `/manifest.yaml`
+	AppsPath := os.Getenv("APPS_PATH")
+	path := AppsPath + appID + `/manifest.yaml`
 
 	dat, err := os.ReadFile(path)
 	if err != nil {
@@ -91,7 +92,8 @@ func CreateApplet(applet AppletSource) (*runtime.Applet, error) {
 		}
 		return app, nil
 	} else if applet.Type == AppletSourceTypeInternal {
-		path := `./TidbytCommunity/apps/` + applet.AppletName
+		AppsPath := os.Getenv("APPS_PATH")
+		path := AppsPath + applet.AppletName
 		_, err := os.Stat(path)
 		if err != nil {
 			return nil, fmt.Errorf("applet not found: %s", path)

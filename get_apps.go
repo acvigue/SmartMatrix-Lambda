@@ -9,8 +9,8 @@ import (
 func GetApps(c *gin.Context) {
 	apps := map[string]AppletManifest{}
 
-	path := `./TidbytCommunity/apps`
-	files, err := os.ReadDir(path)
+	AppsPath := os.Getenv("APPS_PATH")
+	files, err := os.ReadDir(AppsPath)
 
 	if err != nil {
 		c.JSON(404, gin.H{"error": "No apps found"})
