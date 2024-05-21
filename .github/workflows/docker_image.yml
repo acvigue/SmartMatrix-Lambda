@@ -37,7 +37,7 @@ jobs:
         with:
           push: true
           builder: ${{ steps.buildx.outputs.name }}
-          platforms: linux/arm64,linux/amd64
+          platforms: linux/arm64
           tags: ${{ steps.login-ecr.outputs.registry }}/smartmatrix:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
