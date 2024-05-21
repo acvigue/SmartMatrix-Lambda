@@ -1,0 +1,3 @@
+[submodule "TidbytCommunity"]
+	path = TidbytCommunity
+	url = https://github.com/acvigue/TidbytCommunity
