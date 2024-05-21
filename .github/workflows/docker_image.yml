@@ -28,8 +28,6 @@ jobs:
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
-        with:
-          registry-type: public
       - name: Docker Build
         uses: docker/build-push-action@v5
         env:
@@ -40,6 +38,6 @@ jobs:
           push: true
           builder: ${{ steps.buildx.outputs.name }}
           platforms: linux/arm64,linux/amd64
-          tags: ${{ steps.login-ecr.outputs.registry }}/n9o6u1y0/smartmatrix:latest
+          tags: ${{ steps.login-ecr.outputs.registry }}/smartmatrix:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
