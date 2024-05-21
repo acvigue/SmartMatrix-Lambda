@@ -1,9 +1,13 @@
-package smartmatrixlambda
+package main
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"image"
+	"net/http"
+	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"tidbyt.dev/pixlet/encode"
@@ -19,10 +23,68 @@ type PostRenderParams struct {
 	Magnify int               `json:"magnify"`
 }
 
+func PostRenderTidbyt(params PostRenderParams) ([]byte, error) {
+	authToken, err := GetTidbytRendererToken()
+	if err != nil {
+		return nil, err
+	}
+
+	//turn the params into a string
+	confArr := []string{}
+	for k, v := range params.Params {
+		confArr = append(confArr, fmt.Sprintf("%s=%s", k, v))
+	}
+	confString := strings.Join(confArr, "&")
+
+	var buf bytes.Buffer
+	fmt.Fprintf(&buf, "https://prod.tidbyt.com/app-server/preview/%s.webp?v=%d&%s", params.Source.AppletName, time.Now().Unix(), confString)
+	url := buf.String()
+
+	fmt.Printf("URL: %s\n", url)
+
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Authorization", "Bearer "+authToken)
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.StatusCode != 200 {
+		return nil, fmt.Errorf("tidbyt renderer returned status code %d", resp.StatusCode)
+	}
+
+	//return response as bytes
+	buf.Reset()
+	_, err = buf.ReadFrom(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	return buf.Bytes(), nil
+}
+
 func PostRender(c *gin.Context) {
 	var params PostRenderParams
 	if err := c.BindJSON(&params); err != nil {
 		c.JSON(400, gin.H{"error": "invalid request"})
+		return
+	}
+
+	if params.Source.Type == AppletSourceTypeTidbyt {
+		buf, err := PostRenderTidbyt(params)
+
+		if err != nil {
+			c.JSON(400, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.Data(200, "image/webp", buf)
 		return
 	}
 
