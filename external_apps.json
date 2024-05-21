@@ -1,0 +1,30 @@
+{
+  "apps": [
+    {
+      "id": "stocks",
+      "name": "Stocks",
+      "description": "Stocks",
+      "schema_items": [
+        {
+          "id": "symbol",
+          "type": "typeahead"
+        }
+      ]
+    },
+    {
+      "id": "weather",
+      "name": "Weather",
+      "description": "Weather",
+      "schema_items": [
+        {
+          "id": "location",
+          "type": "location"
+        },
+        {
+          "id": "three_day_forecast",
+          "type": "toggle"
+        }
+      ]
+    }
+  ]
+}
