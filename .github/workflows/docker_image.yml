@@ -37,9 +37,9 @@ jobs:
           REPOSITORY: my-ecr-repo
           IMAGE_TAG: ${{ github.sha }}
         with:
-          push: false
+          push: true
           builder: ${{ steps.buildx.outputs.name }}
           platforms: linux/arm64,linux/amd64
-          tags: ${{ steps.login-ecr.outputs.registry }}/n9o6u1y0/smartmatrix:${{ github.sha }}
+          tags: ${{ steps.login-ecr.outputs.registry }}/n9o6u1y0/smartmatrix:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
