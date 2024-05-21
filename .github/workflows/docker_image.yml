@@ -36,6 +36,7 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         with:
           push: true
+          provenance: false
           builder: ${{ steps.buildx.outputs.name }}
           platforms: linux/arm64
           tags: ${{ steps.login-ecr.outputs.registry }}/smartmatrix:latest
